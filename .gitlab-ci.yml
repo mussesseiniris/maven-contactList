@@ -1,0 +1,44 @@
+stages:
+  - build
+  - test
+  - package
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+
+cache:
+  paths:
+    - .m2/repository
+
+build-job:
+  stage: build
+  image: maven:3-openjdk-8
+  script:
+    - mvn clean compile
+  only:
+    - branches
+  tags:
+    - shell
+
+test-job:
+  stage: test
+  image: maven:3-openjdk-8
+  script:
+    - mvn test
+  only:
+    - branches
+  tags:
+    - shell
+
+package-job:
+  stage: package
+  image: maven:3-openjdk-8
+  script:
+    - mvn package
+  artifacts:
+    paths:
+      - target/*.jar
+  only:
+    - branches
+  tags:
+    - shell
